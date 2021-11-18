@@ -2,8 +2,8 @@
 
 Self-describing file names
 
-* [ChessBoard.html](../../raw/master/ChessBoard.html)
-* [ChessClock.html](../../raw/master/ChessClock.html)
-* [Dice.html](../../raw/master/Dice.html)
-* [GoBoard.html](../../raw/master/GoBoard.html)
-* [Scoreboard.html](../../raw/master/Scoreboard.html)
+* [ChessBoard.html](../../blob/main/ChessBoard.html)
+* [ChessClock.html](../../blob/main/ChessClock.html)
+* [Dice.html](../../blob/main/Dice.html)
+* [GoBoard.html](../../blob/main/GoBoard.html)
+* [Scoreboard.html](../../blob/main/Scoreboard.html)
