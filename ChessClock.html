@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chess Clock</title>
+    <style>
+      .timer {
+        font-size: 20vh;
+        height: 35vh;
+        width: 96%;
+      }
+      .button {
+        font-size: 5vh;
+        height: 15vh;
+        width: 48%;
+      }
+    </style>
+  </head>
+  <body style="text-align:center">
+    <button class="timer" id="timer1" onClick="start(2)" style="transform: rotate(180deg)">0:00</button>
+    <br>
+    <button class="button" id="pause" onClick="clearInterval(interval)">pause</button>
+    <button class="button" onClick="reset()">reset</button>
+    <br>
+    <button class="timer" id="timer2" onClick="start(1)">0:00</button>
+    <script>
+      var time1 = 0
+      var time2 = 0
+      var interval
+      function time2clock(time) {
+        minutes = (Math.floor(time/60))
+        seconds = (time%60).toString().padStart(2,'0')
+        return minutes + ':' + seconds
+      }
+	  function timer(id){
+        document.getElementById('timer' + id).innerText = time2clock(++window['time' + id])
+      }
+      function start(id){
+        clearInterval(interval)
+        interval = setInterval(timer, 1000, id)
+      }
+      function reset(){
+        clearInterval(interval)
+        document.getElementById('timer1').innerText = '0:00';
+        document.getElementById('timer2').innerText = '0:00';
+        time1 = time2 = 0
+      }
+    </script>
+  </body>
+</html>

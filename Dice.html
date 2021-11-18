@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <title>Dice</title>
+        <style>
+            body {
+                display: flex;
+            }
+            @media (orientation: portrait) {
+                body {flex-direction: column}
+                button {
+                    font-size: 14vh;
+                    height: 32vh;
+                    width: 90vw;
+                }
+            }
+            @media (orientation: landscape) {
+                body {flex-direction: row}
+                button {
+                    font-size: 14vw;
+                    height: 90vh;
+                    width: 32vw;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <button id="dice1" onClick="roll('dice1')">Dice</button>
+        <button id="dice2" onClick="roll('dice2')">Dice</button>
+        <button id="dice3" onClick="roll('dice3')">Dice</button>
+        <script>
+            function roll(dice) {
+               var num = Math.floor(Math.random() * 6 + 1); document.getElementById(dice).innerText = num
+            }
+        </script>
+    </body>
+</html>
