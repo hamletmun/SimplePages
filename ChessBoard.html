@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chess Board</title>
+    <style>
+	  table {
+	    margin-left:auto;
+		margin-right:auto;
+	  }
+	  td {
+		border: solid;
+		font-size: 5vh;
+        height: 7vh;
+		width: 7vh;
+	  }
+      button {
+        font-size: 3vh;
+        height: 5vh;
+        width: 10vh;
+      }
+	  p {
+        font-size: 3vh;
+	  }
+	  .flex-container {
+	    display: flex;
+	    flex-wrap: wrap;
+	  }
+    </style>
+  </head>
+  <body style="text-align:center">
+	<div class="flex-container">
+		<table id="board"></table>
+		<div style="text-align:center;flex:50%">
+			<form id="prompt"></form>
+			<button onClick="reset()">reset</button>
+		</div>
+	</div>
+	<script>
+	  var board = document.getElementById('board')
+	  var prompt = document.getElementById('prompt')
+	  var selected = ''
+	  var start = [
+		['♜','♞','♝','♛','♚','♝','♞','♜'],
+		['♟','♟','♟','♟','♟','♟','♟','♟'],
+		['','','','','','','',''],
+		['','','','','','','',''],
+		['','','','','','','',''],
+		['','','','','','','',''],
+		['♙','♙','♙','♙','♙','♙','♙','♙'],
+		['♖','♘','♗','♕','♔','♗','♘','♖'],
+	  ]
+
+	  for (i = 0; i < 8; i++) {
+		row = board.insertRow()
+		for (j = 0; j < 8; j++) {
+			cell = row.insertCell()
+			cell.onclick = function () {
+			  if (selected == '') {
+			    selected = [this.parentNode.rowIndex, this.cellIndex]
+				this.style.backgroundColor = 'Lime'
+				if (this.innerText == '') {
+					prompt.innerHTML = '<p>Agregar alguna pieza?</p>'
+					prompt.innerHTML += "<button onclick=\"choose('♟', selected)\">♟</button>"
+					for (j = 0; j < 4; j++) {
+						prompt.innerHTML += "<button onclick=\"choose('" + start[0][j] + "', selected)\">" + start[0][j] + "</button>"
+					}
+					prompt.innerHTML += "<br><button onclick=\"choose('♙', selected)\">♙</button>"
+					for (j = 0; j < 4; j++) {
+						prompt.innerHTML += "<button onclick=\"choose('" + start[7][j] + "', selected)\">" + start[7][j] + "</button>"
+					}
+				}
+			  } else if ((selected[0] != this.parentNode.rowIndex || selected[1] != this.cellIndex) && board.rows[selected[0]].cells[selected[1]].innerText != '') {
+			    coord = [this.parentNode.rowIndex, this.cellIndex]
+				// TODO: Castling
+				// King moves two squares towards a rook, then the rook jumps over the king
+				// TODO: En Passant
+				// If my pawn has already moved three ranks and oponent moves two ranks in one move,
+				// then I can move in diagonal and capture the oponent pawn behind
+				/*if (this.innerText == '♙' && selected[0] == 3 && board.rows[3].cells[this.cellIndex].innerText == '♟') {
+					board.rows[3].cells[this.cellIndex].innerText = ''
+				}
+				if (this.innerText == '♟' && selected[0] == 4 && board.rows[4].cells[this.cellIndex].innerText == '♙') {
+					board.rows[4].cells[this.cellIndex].innerText = ''
+				}*/
+				// TODO: Promotion
+				if (board.rows[selected[0]].cells[selected[1]].innerText == '♟' && coord[0] == 7) {
+					prompt.innerHTML = '<p>A qué pieza lo quiere convertir?</p>'
+					for (j = 0; j < 4; j++) {
+						prompt.innerHTML += "<button onclick=\"choose('" + start[0][j] + "', coord)\">" + start[0][j] + "</button>"
+					}
+				} else if (board.rows[selected[0]].cells[selected[1]].innerText == '♙' && coord[0] == 0) {
+					prompt.innerHTML = '<p>A qué pieza lo quiere convertir?</p>'
+					for (j = 0; j < 4; j++) {
+						prompt.innerHTML += "<button onclick=\"choose('" + start[7][j] + "', coord)\">" + start[7][j] + "</button>"
+					}
+				} else {
+					choose(board.rows[selected[0]].cells[selected[1]].innerText, coord)
+				}
+			  } else {
+				cellColor(selected)
+				selected = prompt.innerHTML = ''
+			  }
+			}
+		}
+      }
+
+	  function choose(piece, coord) {
+		  console.log(piece, ...selected, ...coord)
+		  board.rows[coord[0]].cells[coord[1]].innerText = piece
+		  if (selected != coord) {
+			board.rows[selected[0]].cells[selected[1]].innerText = ''
+		  }
+		  cellColor(selected)
+		  selected = prompt.innerHTML = ''
+	  }
+
+	  function cellColor(coord){
+	    var colorCode
+		if ((coord[0] & 1 && !(coord[1] & 1)) || (!(coord[0] & 1) && coord[1] & 1)) {
+		  colorCode = 'BurlyWood'
+		} else {
+		  colorCode = 'White'
+		}
+		board.rows[coord[0]].cells[coord[1]].style.backgroundColor = colorCode
+	  }
+
+	  function redraw(pieces){
+		for (i = 0; i < 8; i++) {
+			row = board.rows[i]
+			for (j = 0; j < 8; j++) {
+				cell = row.cells[j]
+				cellColor([i,j])
+				if (pieces[i][j] == '') {
+					cell.innerText = ''
+				} else {
+					cell.innerText = pieces[i][j]
+				}
+			}
+		}
+	  }
+
+	  function reset(){
+	  	var r = confirm("Reset?");
+		if (r == true) {
+			selected = prompt.innerHTML = ''
+			redraw(start)
+		}
+	  }
+
+	  redraw(start)
+	</script>
+  </body>
+</html>

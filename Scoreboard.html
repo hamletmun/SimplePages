@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Scoreboard</title>
+    <style>
+      .up {
+        font-size: 25vw;
+        height: 30vw;
+        width: 48%;
+      }
+      .button {
+        font-size: 5vw;
+        height: 10vw;
+        width: 32%;
+      }
+    </style>
+  </head>
+  <body style="text-align:center">
+    <button class="up" id="num1" onClick="inc(1)">0</button>
+    <button class="up" id="num2" onClick="inc(2)">0</button>
+    <br>
+    <button class="button" onClick="dec(1)">▼</button>
+    <button class="button" onClick="reset()">reset</button>
+    <button class="button" onClick="dec(2)">▼</button>
+    <script>
+      var score1 = 0
+      var score2 = 0
+      function inc(id){
+        document.getElementById('num' + id).innerText = ++window['score' + id]
+      }
+      function dec(id){
+        document.getElementById('num' + id).innerText = --window['score' + id]
+      }
+      function reset(){
+        document.getElementById('num1').innerText = 0
+        document.getElementById('num2').innerText = 0
+        score1 = score2 = 0
+      }
+    </script>
+  </body>
+</html>

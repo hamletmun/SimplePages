@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
+    <title>Go Board</title>
+    <style>
+      button {
+        font-size: 3vh;
+        height: 5vh;
+        width: 10vh;
+      }
+	  p {
+        font-size: 3vh;
+	  }
+	  canvas {
+	    border: 2px solid;
+		background-color: BurlyWood;
+	    stroke: black;
+	  }
+	  .flex-container {
+	    display: flex;
+	    flex-wrap: wrap;
+	  }
+    </style>
+  </head>
+  <body style="text-align:center">
+	<div class="flex-container">
+		<canvas id="board"></canvas>
+		<div style="text-align:center;flex:50%">
+			<p id="capture">0 Black - Captured - White 0</p>
+			<button onClick="pass()">pass</button>
+			<button onClick="reset()">reset</button>
+		</div>
+	</div>
+	<script>
+	  var canvas = document.getElementById('board')
+	  var capture = document.getElementById('capture')
+
+	  var boardsize = 19 // 19,13,9
+	  var eyesize = 32
+	  var captured_b = 0
+	  var captured_w = 0
+	  var color = 'black'
+
+	  canvas.width = boardsize * eyesize
+	  canvas.height = boardsize * eyesize
+	  var board = canvas.getContext('2d')
+
+	  var points = new Array(boardsize)
+	  for (i = 0; i <= boardsize; i++) {
+	    points[i] = new Array(boardsize)
+	  }
+	  switch(boardsize) {
+		case 9: var starpoints = [[3,3],[3,7],[5,5],[7,3],[7,7]]; break
+		case 13: var starpoints = [[4,4],[4,10],[7,7],[10,4],[10,10]]; break
+		case 19: var starpoints = [[4,4],[4,10],[4,16],[10,4],[10,10],[10,16],[16,4],[16,10],[16,16]]; break
+	  }
+
+	  for (i = 0; i < boardsize/2; i++) {
+		for (j = 0; j < boardsize/2; j++) {
+		  board.strokeRect(i*eyesize*2-eyesize/2, j*eyesize*2-eyesize/2, eyesize, eyesize)
+		  board.strokeRect(i*eyesize*2+eyesize/2, j*eyesize*2+eyesize/2, eyesize, eyesize)
+		}
+	  }
+
+	  board.fillStyle = 'black'
+	  board.beginPath()
+	  starpoints.forEach(e => {
+	    board.moveTo(e[0]*eyesize-eyesize/2,e[1]*eyesize-eyesize/2)
+		board.arc(e[0]*eyesize-eyesize/2,e[1]*eyesize-eyesize/2,eyesize/6,0,360)
+	  })
+	  board.fill()
+
+	  canvas.addEventListener('click', function(evt) {
+		var coord = [Math.round((evt.pageX+canvas.offsetLeft+canvas.clientLeft)/eyesize),Math.round((evt.pageY+canvas.offsetTop+canvas.clientTop)/eyesize)]
+		if (typeof points[coord[0]][coord[1]] == 'undefined') {
+			points[coord[0]][coord[1]] = color
+			console.log(...coord,color,'move')
+			board.fillStyle = color
+			board.beginPath()
+			board.arc(coord[0]*eyesize-eyesize/2,coord[1]*eyesize-eyesize/2,eyesize*0.45,0,360)
+			board.fill()
+			pass()
+		} else {
+			if (confirm("Capture?")) {
+				if (points[coord[0]][coord[1]] == 'black') {
+					captured_b += 1
+				} else {
+					captured_w += 1
+				}
+				capture.innerHTML = "<p>" + captured_b + " Black - Captured - White " + captured_w, "</p>"
+				console.log(...coord,points[coord[0]][coord[1]],'captured')
+				delete points[coord[0]][coord[1]]
+				board.clearRect(coord[0]*eyesize-eyesize,coord[1]*eyesize-eyesize,eyesize,eyesize)
+				board.beginPath()
+				board.moveTo(coord[0]*eyesize-eyesize,coord[1]*eyesize-eyesize/2)
+				board.lineTo(coord[0]*eyesize,coord[1]*eyesize-eyesize/2)
+				board.moveTo(coord[0]*eyesize-eyesize/2,coord[1]*eyesize-eyesize)
+				board.lineTo(coord[0]*eyesize-eyesize/2,coord[1]*eyesize)
+				board.stroke()
+				starpoints.forEach(e => {
+				    if (e[0] == coord[0] && e[1] == coord[1]) {
+						board.fillStyle = 'black'
+						board.beginPath()
+						board.arc(e[0]*eyesize-eyesize/2,e[1]*eyesize-eyesize/2,eyesize/6,0,360)
+						board.fill()
+					}
+				})
+			}
+		}
+	  })
+
+	  function pass(){
+	    color = (color == 'black') ? 'white' : 'black'
+	  }
+
+	  function reset(){
+		if (confirm("Reset?")) {
+		  location.reload()
+		}
+	  }
+	</script>
+  </body>
+</html>
