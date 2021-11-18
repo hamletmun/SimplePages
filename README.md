@@ -1,4 +1,4 @@
-## Welcome to SimplePages
+## Welcome to GitHub Pages
 
 Self-describing file names
 
