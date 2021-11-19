@@ -1,6 +1,8 @@
 ## Welcome to GitHub Pages
 
-Self-describing file names
+https://hamletmun.github.io/SimplePages
+
+### Self-describing file names
 
 * [ChessBoard.html](https://hamletmun.github.io/SimplePages/ChessBoard.html)
 * [ChessClock.html](https://hamletmun.github.io/SimplePages/ChessClock.html)
