@@ -9,3 +9,4 @@ https://hamletmun.github.io/SimplePages
 * [Dice.html](https://hamletmun.github.io/SimplePages/Dice.html)
 * [GoBoard.html](https://hamletmun.github.io/SimplePages/GoBoard.html)
 * [Scoreboard.html](https://hamletmun.github.io/SimplePages/Scoreboard.html)
+* [XiangqiBoard.html](https://hamletmun.github.io/SimplePages/XiangqiBoard.html)
