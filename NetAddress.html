@@ -13,10 +13,10 @@ table { font-family: monospace }
 	<button onclick="convert()">Convert</button><button onclick="clrOutput()">Clear</button><br>
 
 	<h2><label for="output">Output</label></h2>
-	<textarea id="output" rows="25%" cols="150" readonly></textarea>
+	<textarea id="output" rows="25%" cols="160" readonly></textarea>
 	<h2>Examples</h2>
 	<table>
-		<tr><th>IPv4 Address</th><th>Integer</th><th>HEX</th><th>BIN</th></tr>
+		<tr><th>IPv4 Address</th><th>BigInteger</th><th>Hexadecimal</th><th>Binary</th></tr>
 		<tr><td>0.0.0.0</td><td>0</td><td>00,00,00,00</td><td>00000000,00000000,00000000,00000000</td></tr>
 		<tr><td>0.0.0.1</td><td>1</td><td>00,00,00,01</td><td>00000000,00000000,00000000,00000001</td></tr>
 		<tr><td>0.0.0.15</td><td>15</td><td>00,00,00,0f</td><td>00000000,00000000,00000000,00001111</td></tr>
@@ -28,7 +28,7 @@ table { font-family: monospace }
 		<tr><td>255.255.255.0</td><td>4294967040</td><td>ff,ff,ff,00</td><td>11111111,11111111,11111111,00000000</td></tr>
 		<tr><td>255.255.255.255</td><td>4294967295</td><td>ff,ff,ff,ff</td><td>11111111,11111111,11111111,11111111</td></tr>
 
-		<tr><th>IPv6 Address</th><th>Integer</th><th>HEX</th><th>BIN</th></tr>
+		<tr><th>IPv6 Address</th><th>BigInteger</th><th>Hexadecimal</th><th>Binary</th></tr>
 		<tr><td>::0</td><td>0</td><td>00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00</td><td>00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000</td></tr>
 		<tr><td>::ffff</td><td>65535</td><td>00,00,00,00,00,00,00,00,00,00,00,00,00,00,ff,ff</td><td>00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,11111111,11111111</td></tr>
 		<tr><td>::ffff:ffff</td><td>4294967295</td><td>00,00,00,00,00,00,00,00,00,00,00,00,ff,ff,ff,ff</td><td>00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,11111111,11111111,11111111,11111111</td></tr>
@@ -51,19 +51,32 @@ table { font-family: monospace }
 		if (ipaddr.isValid(trimed)) {
 			byteArray = ipaddr.parse(trimed).toByteArray()
 		} else {
-			byteArray = []
-			BigInt(trimed).toString(2).padStart(128,'0').match(/.{1,8}/g).forEach((e)=>{byteArray.push(parseInt(e, 2))})
+			if (BigInt(trimed) > 340282366920938463463374607431768211455n) {
+				output.value = 'Overflow\n'
+				return
+			} else {
+				byteArray = []
+				BigInt(trimed).toString(2).padStart(128,'0').match(/.{1,8}/g).forEach(e=>{byteArray.push(parseInt(e, 2))})
+			}
 		}
 		input.value = ''
-		byteArrayHex = byteArray.map(e=>e.toString(16).padStart(2,'0'))
+		Octets = byteArray.map(e=>e.toString(2).padStart(8,'0'))
 
-		output.value += 'BigInteger  ' + BigInt('0x' + byteArrayHex.join('')) +
-		'\nHexadecimal ' + (byteArrayHex.join('').match(/.{1,4}/g) ?? []).join(':') +
+		output.value += 'BigInteger  ' + BigInt('0b' + Octets.join('')) +
+		'\nHexadecimal ' + byteArray.map(e=>e.toString(16).padStart(2,'0')).join('').match(/.{1,4}/g).join(':') +
+		'\n\nNumber System' +
+		'\n* Binary:       ' + Octets.join('') +
+		'\n* Quaternary    ' + Octets.join('').match(/.{1,2}/g).map(e=>{return parseInt(e, 2).toString().padStart(2,' ')}).join('') +
+		'\n* Octal         ' + Octets.join('').match(/.{1,3}(?=(.{3})*$)/g).map(e=>{return parseInt(e, 2).toString(8).padStart(3,' ')}).join('').slice(byteArray.length * -8) +
+		'\n* Hexadecimal   ' + Octets.join('').match(/.{1,4}/g).map(e=>{return parseInt(e, 2).toString(16).padStart(4,' ')}).join('') +
+		'\n* Duotrigesimal ' + Octets.join('').match(/.{1,5}(?=(.{5})*$)/g).map(e=>{return parseInt(e, 2).toString(32).padStart(5,' ')}).join('').slice(byteArray.length * -8) +
 		'\n\nByte Arrays' +
-		'\n* BIN: ' + byteArray.map(e=>e.toString(2).padStart(8,'0')) +
-		'\n* OCT: ' + byteArray.map(e=>e.toString(8).padStart(8,' ')) +
-		'\n* DEC: ' + byteArray.map(e=>e.toString(10).padStart(8,' ')) +
-		'\n* HEX: ' + byteArrayHex.map(e=>e.padStart(8,' ')) + '\n\n'
+		'\n* Binary:       ' + Octets +
+		'\n* Quaternary    ' + byteArray.map(e=>e.toString(4).padStart(8,' ')) +
+		'\n* Octal         ' + byteArray.map(e=>e.toString(8).padStart(8,' ')) +
+		'\n* Decimal       ' + byteArray.map(e=>e.toString(10).padStart(8,' ')) +
+		'\n* Hexadecimal   ' + byteArray.map(e=>e.toString(16).padStart(8,' ')) +
+		'\n* Duotrigesimal ' + byteArray.map(e=>e.toString(32).padStart(8,' ')) + '\n\n'
 
 		output.scrollTop = output.scrollHeight
 	}
