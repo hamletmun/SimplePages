@@ -64,14 +64,14 @@ table { font-family: monospace }
 
 		output.value += 'BigInteger  ' + BigInt('0b' + Octets.join('')) +
 		'\nHexadecimal ' + byteArray.map(e=>e.toString(16).padStart(2,'0')).join('').match(/.{1,4}/g).join(':') +
-		'\n\nNumber System' +
-		'\n* Binary:       ' + Octets.join('') +
+		'\n\nNumeral Systems' +
+		'\n* Binary        ' + Octets.join('') +
 		'\n* Quaternary    ' + Octets.join('').match(/.{1,2}/g).map(e=>{return parseInt(e, 2).toString().padStart(2,' ')}).join('') +
 		'\n* Octal         ' + Octets.join('').match(/.{1,3}(?=(.{3})*$)/g).map(e=>{return parseInt(e, 2).toString(8).padStart(3,' ')}).join('').slice(byteArray.length * -8) +
 		'\n* Hexadecimal   ' + Octets.join('').match(/.{1,4}/g).map(e=>{return parseInt(e, 2).toString(16).padStart(4,' ')}).join('') +
 		'\n* Duotrigesimal ' + Octets.join('').match(/.{1,5}(?=(.{5})*$)/g).map(e=>{return parseInt(e, 2).toString(32).padStart(5,' ')}).join('').slice(byteArray.length * -8) +
 		'\n\nByte Arrays' +
-		'\n* Binary:       ' + Octets +
+		'\n* Binary        ' + Octets +
 		'\n* Quaternary    ' + byteArray.map(e=>e.toString(4).padStart(8,' ')) +
 		'\n* Octal         ' + byteArray.map(e=>e.toString(8).padStart(8,' ')) +
 		'\n* Decimal       ' + byteArray.map(e=>e.toString(10).padStart(8,' ')) +
