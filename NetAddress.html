@@ -1,0 +1,74 @@
+<html>
+<head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ipaddr.js/2.0.1/ipaddr.min.js"></script>
+<style>
+table { font-family: monospace }
+</style>
+</head>
+<body>
+	<h1>NetAddress</h1>
+
+	<h2><label for="input">Input (IP address or Number)</label></h2>
+	<textarea id="input" cols="40"></textarea>
+	<button onclick="convert()">Convert</button><button onclick="clrOutput()">Clear</button><br>
+
+	<h2><label for="output">Output</label></h2>
+	<textarea id="output" rows="25%" cols="150" readonly></textarea>
+	<h2>Examples</h2>
+	<table>
+		<tr><th>IPv4 Address</th><th>Integer</th><th>HEX</th><th>BIN</th></tr>
+		<tr><td>0.0.0.0</td><td>0</td><td>00,00,00,00</td><td>00000000,00000000,00000000,00000000</td></tr>
+		<tr><td>0.0.0.1</td><td>1</td><td>00,00,00,01</td><td>00000000,00000000,00000000,00000001</td></tr>
+		<tr><td>0.0.0.15</td><td>15</td><td>00,00,00,0f</td><td>00000000,00000000,00000000,00001111</td></tr>
+		<tr><td>0.0.0.255</td><td>255</td><td>00,00,00,ff</td><td>00000000,00000000,00000000,11111111</td></tr>
+		<tr><td>0.0.1.0</td><td>256</td><td>00,00,01,00</td><td>00000000,00000000,00000001,00000000</td></tr>
+		<tr><td>0.0.255.255</td><td>65535</td><td>00,00,ff,ff</td><td>00000000,00000000,11111111,11111111</td></tr>
+		<tr><td>10.0.64.127</td><td>168951935</td><td>0a,12,00,7f</td><td>00001010,00010010,00000000,01111111</td></tr>
+		<tr><td>192.168.0.128</td><td>3232235648</td><td>c0,a8,00,80</td><td>11000000,10101000,00000000,10000000</td></tr>
+		<tr><td>255.255.255.0</td><td>4294967040</td><td>ff,ff,ff,00</td><td>11111111,11111111,11111111,00000000</td></tr>
+		<tr><td>255.255.255.255</td><td>4294967295</td><td>ff,ff,ff,ff</td><td>11111111,11111111,11111111,11111111</td></tr>
+
+		<tr><th>IPv6 Address</th><th>Integer</th><th>HEX</th><th>BIN</th></tr>
+		<tr><td>::0</td><td>0</td><td>00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00</td><td>00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000</td></tr>
+		<tr><td>::ffff</td><td>65535</td><td>00,00,00,00,00,00,00,00,00,00,00,00,00,00,ff,ff</td><td>00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,11111111,11111111</td></tr>
+		<tr><td>::ffff:ffff</td><td>4294967295</td><td>00,00,00,00,00,00,00,00,00,00,00,00,ff,ff,ff,ff</td><td>00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,11111111,11111111,11111111,11111111</td></tr>
+		<tr><td>::ffff:ffff:ffff:ffff</td><td>18446744073709551615</td><td>00,00,00,00,00,00,00,00,ff,ff,ff,ff,ff,ff,ff,ff</td><td>00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,11111111,11111111,11111111,11111111,11111111,11111111,11111111,11111111</td></tr>
+		<tr><td>0:0:0:1::</td><td>18446744073709551616</td><td>00,00,00,00,00,00,00,01,00,00,00,00,00,00,00,00</td><td>00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000</td></tr>
+		<tr><td>0:f:0:f:0:f:0:f</td><td>1188422437990666225073227038735</td><td>00,00,00,0f,00,00,00,0f,00,00,00,0f,00,00,00,0f</td><td>00000000,00000000,00000000,00001111,00000000,00000000,00000000,00001111,00000000,00000000,00000000,00001111,00000000,00000000,00000000,00001111</td></tr>
+		<tr><td>f:0:f:0:f:0:f:0</td><td>77884452896156301726399007210536960</td><td>00,0f,00,00,00,0f,00,00,00,0f,00,00,00,0f,00,00</td><td>00000000,00001111,00000000,00000000,00000000,00001111,00000000,00000000,00000000,00001111,00000000,00000000,00000000,00001111,00000000,00000000</td></tr>
+		<tr><td>ffff:ffff::ffff:ffff</td><td>340282366841710300949110269842519228415</td><td>ff,ff,ff,ff,00,00,00,00,00,00,00,00,ff,ff,ff,ff</td><td>11111111,11111111,11111111,11111111,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,11111111,11111111,11111111,11111111</td></tr>
+		<tr><td>ffff:ffff:ffff:ffff::</td><td>340282366920938463444927863358058659840</td><td>ff,ff,ff,ff,ff,ff,ff,ff,00,00,00,00,00,00,00,00</td><td>11111111,11111111,11111111,11111111,11111111,11111111,11111111,11111111,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000</td></tr>
+		<tr><td>ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff</td><td>340282366920938463463374607431768211455</td><td>ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff</td><td>11111111,11111111,11111111,11111111,11111111,11111111,11111111,11111111,11111111,11111111,11111111,11111111,11111111,11111111,11111111,11111111</td></tr>
+	</table>
+</body>
+<script>
+	// https://github.com/whitequark/ipaddr.js
+	input = document.getElementById("input");
+	output = document.getElementById("output");
+	function convert() {
+		trimed = input.value.trim()
+		
+		if (ipaddr.isValid(trimed)) {
+			byteArray = ipaddr.parse(trimed).toByteArray()
+		} else {
+			byteArray = []
+			BigInt(trimed).toString(2).padStart(128,'0').match(/.{1,8}/g).forEach((e)=>{byteArray.push(parseInt(e, 2))})
+		}
+		input.value = ''
+		byteArrayHex = byteArray.map(e=>e.toString(16).padStart(2,'0'))
+
+		output.value += 'BigInteger  ' + BigInt('0x' + byteArrayHex.join('')) +
+		'\nHexadecimal ' + (byteArrayHex.join('').match(/.{1,4}/g) ?? []).join(':') +
+		'\n\nByte Arrays' +
+		'\n* BIN: ' + byteArray.map(e=>e.toString(2).padStart(8,'0')) +
+		'\n* OCT: ' + byteArray.map(e=>e.toString(8).padStart(8,' ')) +
+		'\n* DEC: ' + byteArray.map(e=>e.toString(10).padStart(8,' ')) +
+		'\n* HEX: ' + byteArrayHex.map(e=>e.padStart(8,' ')) + '\n\n'
+
+		output.scrollTop = output.scrollHeight
+	}
+	function clrOutput() {
+		output.value = ''
+	}
+</script>
+</html>
