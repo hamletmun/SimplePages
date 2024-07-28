@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
+    <title>Xiangqi Board</title>
+    <style>
+      button {
+        font-size: 3vh;
+        height: 5vh;
+        width: 10vh;
+      }
+	  p {
+        font-size: 3vh;
+	  }
+	  canvas {
+	    border: 2px solid;
+		background-color: BurlyWood;
+	    stroke: black;
+	  }
+	  .flex-container {
+	    display: flex;
+	    flex-wrap: wrap;
+	  }
+    </style>
+  </head>
+  <body style="text-align:center">
+	<div class="flex-container">
+		<canvas id="board" width="608" height="608"></canvas>
+		<div style="text-align:center;flex:50%">
+			<button onclick="reset()">reset</button>
+		</div>
+	</div>
+	<script>
+	  var canvas = document.getElementById('board')
+	  var selected = ''
+	  var eyesize = 64
+
+	  canvas.width = 9 * eyesize
+	  canvas.height = 10 * eyesize
+	  var board = canvas.getContext('2d')
+
+		var points = [
+		  ['俥','傌','相','仕','師','仕','相','傌','俥'],
+		  ['','','','','','','','',''],
+		  ['','炮','','','','','','炮',''],
+		  ['兵','','兵','','兵','','兵','','兵'],
+		  ['','','','','','','','',''],
+		  ['','','','','','','','',''],
+		  ['卒','','卒','','卒','','卒','','卒'],
+		  ['','砲','','','','','','砲',''],
+		  ['','','','','','','','',''],
+		  ['車','馬','象','士','將','士','象','馬','車'],
+		]
+
+	  for (i = 0; i < 5; i++) {
+		for (j = 0; j < 6; j++) {
+		  board.strokeRect(i*eyesize*2-eyesize/2, j*eyesize*2-eyesize/2, eyesize, eyesize)
+		  board.strokeRect(i*eyesize*2+eyesize/2, j*eyesize*2+eyesize/2, eyesize, eyesize)
+		}
+	  }
+
+	board.beginPath()
+	board.moveTo(4*eyesize-eyesize/2,1*eyesize-eyesize/2)
+	board.lineTo(6*eyesize-eyesize/2,3*eyesize-eyesize/2)
+	board.moveTo(6*eyesize-eyesize/2,1*eyesize-eyesize/2)
+	board.lineTo(4*eyesize-eyesize/2,3*eyesize-eyesize/2)
+	board.moveTo(4*eyesize-eyesize/2,8*eyesize-eyesize/2)
+	board.lineTo(6*eyesize-eyesize/2,10*eyesize-eyesize/2)
+	board.moveTo(6*eyesize-eyesize/2,8*eyesize-eyesize/2)
+	board.lineTo(4*eyesize-eyesize/2,10*eyesize-eyesize/2)
+	board.stroke()
+
+
+	  for (i = 0; i < 10; i++) {
+		for (j = 0; j < 9; j++) {
+		  if (points[i][j] != '') {
+		    var ratio = (['兵','仕','士','卒'].includes(points[i][j])) ? 0.3 : 0.45
+			board.beginPath()
+			board.fillStyle = 'white'
+			board.arc(eyesize*j+eyesize/2, eyesize*i+eyesize/2,eyesize*ratio,0,360)
+			board.fill()
+			if (['車','馬','象','士','將','砲','卒'].includes(points[i][j])) { board.fillStyle = 'green' } else { board.fillStyle = 'red' }
+			board.font = eyesize*(ratio+.07) + 'px Arial'
+			board.textAlign = 'center'
+		    board.fillText(points[i][j], eyesize*j+eyesize/2, eyesize*i+eyesize/1.5)
+		  }
+		}
+	  }
+
+	  canvas.addEventListener('click', function(evt) {
+		var coord = [Math.round((evt.pageY+canvas.offsetTop+canvas.clientTop)/eyesize),Math.round((evt.pageX+canvas.offsetLeft+canvas.clientLeft)/eyesize)]
+		if (selected == '') {
+			//console.log(coord[0],coord[1],'selected')
+			selected = [coord[0], coord[1]]
+		} else if (selected[0] == coord[0] && selected[1] == coord[1]) {
+			selected = ''
+		} else {
+			//console.log(coord[0],coord[1],'put')
+			points[coord[0]-1][coord[1]-1] = points[selected[0]-1][selected[1]-1]
+			board.clearRect(selected[1]*eyesize-eyesize,selected[0]*eyesize-eyesize,eyesize,eyesize)
+			board.beginPath()
+			board.moveTo(selected[1]*eyesize-eyesize,selected[0]*eyesize-eyesize/2)
+			board.lineTo(selected[1]*eyesize,selected[0]*eyesize-eyesize/2)
+			board.moveTo(selected[1]*eyesize-eyesize/2,selected[0]*eyesize-eyesize)
+			board.lineTo(selected[1]*eyesize-eyesize/2,selected[0]*eyesize)
+			if (selected[1] == 4 && selected[0] == 1) {
+				board.moveTo(3.5*eyesize,0.5*eyesize)
+				board.lineTo(4*eyesize,1*eyesize)
+			} else if (selected[1] == 6 && selected[0] == 1) {
+				board.moveTo(5.5*eyesize,0.5*eyesize)
+				board.lineTo(5*eyesize,1*eyesize)
+			} else if (selected[1] == 5 && selected[0] == 2) {
+				board.moveTo(4*eyesize,1*eyesize)
+				board.lineTo(5*eyesize,2*eyesize)
+				board.moveTo(5*eyesize,1*eyesize)
+				board.lineTo(4*eyesize,2*eyesize)
+			} else if (selected[1] == 4 && selected[0] == 3) {
+				board.moveTo(3.5*eyesize,2.5*eyesize)
+				board.lineTo(4*eyesize,2*eyesize)
+			} else if (selected[1] == 6 && selected[0] == 3) {
+				board.moveTo(5.5*eyesize,2.5*eyesize)
+				board.lineTo(5*eyesize,2*eyesize)
+			} else if (selected[1] == 4 && selected[0] == 8) {
+				board.moveTo(3.5*eyesize,7.5*eyesize)
+				board.lineTo(4*eyesize,8*eyesize)
+			} else if (selected[1] == 6 && selected[0] == 8) {
+				board.moveTo(5.5*eyesize,7.5*eyesize)
+				board.lineTo(5*eyesize,8*eyesize)
+			} else if (selected[1] == 5 && selected[0] == 9) {
+				board.moveTo(4*eyesize,8*eyesize)
+				board.lineTo(5*eyesize,9*eyesize)
+				board.moveTo(5*eyesize,8*eyesize)
+				board.lineTo(4*eyesize,9*eyesize)
+			} else if (selected[1] == 4 && selected[0] == 10) {
+				board.moveTo(3.5*eyesize,9.5*eyesize)
+				board.lineTo(4*eyesize,9*eyesize)
+			} else if (selected[1] == 6 && selected[0] == 10) {
+				board.moveTo(5.5*eyesize,9.5*eyesize)
+				board.lineTo(5*eyesize,9*eyesize)
+			}
+			board.stroke()
+			points[selected[0]-1][selected[1]-1] = ''
+			//console.log(points)
+			selected = ''
+			var ratio = (['兵','仕','士','卒'].includes(points[coord[0]-1][coord[1]-1])) ? 0.3 : 0.45
+			board.beginPath()
+			board.fillStyle = 'white'
+			board.arc(eyesize*coord[1]-eyesize/2, eyesize*coord[0]-eyesize/2, eyesize*ratio,0,360)
+			board.fill()
+			if (['車','馬','象','士','將','砲','卒'].includes(points[coord[0]-1][coord[1]-1])) {
+				board.fillStyle = 'green'
+			} else {
+				board.fillStyle = 'red'
+			}
+			board.font = eyesize*(ratio+.07) + 'px Arial'
+			board.textAlign = 'center'
+		    board.fillText(points[coord[0]-1][coord[1]-1], eyesize*coord[1]-eyesize/2, eyesize*coord[0]-eyesize/3)
+		}
+	  })
+
+	  function reset(){
+		if (confirm("Reset?")) {
+		  location.reload()
+		}
+	  }
+	</script>
+
+</body></html>
