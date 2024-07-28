@@ -8,5 +8,6 @@ https://hamletmun.github.io/SimplePages
 * [ChessClock.html](https://hamletmun.github.io/SimplePages/ChessClock.html)
 * [Dice.html](https://hamletmun.github.io/SimplePages/Dice.html)
 * [GoBoard.html](https://hamletmun.github.io/SimplePages/GoBoard.html)
+* [NetAddress.html](https://hamletmun.github.io/SimplePages/NetAddress.html)
 * [Scoreboard.html](https://hamletmun.github.io/SimplePages/Scoreboard.html)
 * [XiangqiBoard.html](https://hamletmun.github.io/SimplePages/XiangqiBoard.html)

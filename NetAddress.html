@@ -1,0 +1,91 @@
+<html>
+<head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ipaddr.js/2.0.1/ipaddr.min.js"></script>
+<style>
+table { font-family: monospace }
+</style>
+</head>
+<body>
+	<h1>NetAddress</h1>
+
+	<h2><label for="input">Input (IP address or Number)</label></h2>
+	<textarea id="input" cols="40"></textarea>
+	<button onclick="convert()">Convert</button><button onclick="clrOutput()">Clear</button><br>
+
+	<h2><label for="output">Output</label></h2>
+	<textarea id="output" rows="25%" cols="160" readonly></textarea>
+	<h2>Examples</h2>
+	<table>
+		<tr><th>IPv4 Address</th><th>BigInteger</th><th>Hexadecimal</th><th>Binary</th></tr>
+		<tr><td>0.0.0.0</td><td>0</td><td>0000:0000</td><td>00000000.00000000.00000000.00000000</td></tr>
+		<tr><td>0.0.0.1</td><td>1</td><td>0000:0001</td><td>00000000.00000000.00000000.00000001</td></tr>
+		<tr><td>0.0.0.15</td><td>15</td><td>0000:000f</td><td>00000000.00000000.00000000.00001111</td></tr>
+		<tr><td>0.0.0.255</td><td>255</td><td>0000:00ff</td><td>00000000.00000000.00000000.11111111</td></tr>
+		<tr><td>0.0.1.0</td><td>256</td><td>0000:0100</td><td>00000000.00000000.00000001.00000000</td></tr>
+		<tr><td>0.0.255.255</td><td>65535</td><td>0000:ffff</td><td>00000000.00000000.11111111.11111111</td></tr>
+		<tr><td>10.0.64.127</td><td>167788671</td><td>0a00:407f</td><td>00001010.00000000.01000000.01111111</td></tr>
+		<tr><td>192.168.0.128</td><td>3232235648</td><td>c0a8:0080</td><td>11000000.10101000.00000000.10000000</td></tr>
+		<tr><td>255.255.255.0</td><td>4294967040</td><td>ffff:ff00</td><td>11111111.11111111.11111111.00000000</td></tr>
+		<tr><td>255.255.255.255</td><td>4294967295</td><td>ffff:ffff</td><td>11111111.11111111.11111111.11111111</td></tr>
+
+		<tr><th>IPv6 Address</th><th>BigInteger</th><th>Hexadecimal</th><th>Binary</th></tr>
+		<tr><td>::0</td><td>0</td><td>0000:0000:0000:0000:0000:0000:0000:0000</td><td>0000000000000000:0000000000000000:0000000000000000:0000000000000000:0000000000000000:0000000000000000:0000000000000000:0000000000000000</td></tr>
+		<tr><td>::ffff</td><td>65535</td><td>0000:0000:0000:0000:0000:0000:0000:ffff</td><td>0000000000000000:0000000000000000:0000000000000000:0000000000000000:0000000000000000:0000000000000000:0000000000000000:1111111111111111</td></tr>
+		<tr><td>::ffff:ffff</td><td>4294967295</td><td>0000:0000:0000:0000:0000:0000:ffff:ffff</td><td>0000000000000000:0000000000000000:0000000000000000:0000000000000000:0000000000000000:0000000000000000:1111111111111111:1111111111111111</td></tr>
+		<tr><td>::ffff:0:0</td><td>281470681743360</td><td>0000:0000:0000:0000:0000:ffff:0000:0000</td><td>0000000000000000:0000000000000000:0000000000000000:0000000000000000:0000000000000000:1111111111111111:0000000000000000:0000000000000000</td></tr>
+		<tr><td>::ffff:0:0:0</td><td>18446462598732840960</td><td>0000:0000:0000:0000:ffff:0000:0000:0000</td><td>0000000000000000:0000000000000000:0000000000000000:0000000000000000:1111111111111111:0000000000000000:0000000000000000:0000000000000000</td></tr>
+		<tr><td>::ffff:ffff:ffff:ffff</td><td>18446744073709551615</td><td>0000:0000:0000:0000:ffff:ffff:ffff:ffff</td><td>0000000000000000:0000000000000000:0000000000000000:0000000000000000:1111111111111111:1111111111111111:1111111111111111:1111111111111111</td></tr>
+		<tr><td>0:0:0:1::</td><td>18446744073709551616</td><td>0000:0000:0000:0001:0000:0000:0000:0000</td><td>0000000000000000:0000000000000000:0000000000000000:0000000000000001:0000000000000000:0000000000000000:0000000000000000:0000000000000000</td></tr>
+		<tr><td>0:f:0:f:0:f:0:f</td><td>1188422437990666225073227038735</td><td>0000:000f:0000:000f:0000:000f:0000:000f</td><td>0000000000000000:0000000000001111:0000000000000000:0000000000001111:0000000000000000:0000000000001111:0000000000000000:0000000000001111</td></tr>
+		<tr><td>f:0:f:0:f:0:f:0</td><td>77884452896156301726399007210536960</td><td>000f:0000:000f:0000:000f:0000:000f:0000</td><td>0000000000001111:0000000000000000:0000000000001111:0000000000000000:0000000000001111:0000000000000000:0000000000001111:0000000000000000</td></tr>
+		<tr><td>64:ff9b::</td><td>524413980667603649783483181312245760</td><td>0064:ff9b:0000:0000:0000:0000:0000:0000</td><td>0000000001100100:1111111110011011:0000000000000000:0000000000000000:0000000000000000:0000000000000000:0000000000000000:0000000000000000</td></tr>
+		<tr><td>2001:db8::</td><td>42540766411282592856903984951653826560</td><td>2001:0db8:0000:0000:0000:0000:0000:0000</td><td>0010000000000001:0000110110111000:0000000000000000:0000000000000000:0000000000000000:0000000000000000:0000000000000000:0000000000000000</td></tr>
+		<tr><td>ffff:ffff::ffff:ffff</td><td>340282366841710300949110269842519228415</td><td>ffff:ffff:0000:0000:0000:0000:ffff:ffff</td><td>1111111111111111:1111111111111111:0000000000000000:0000000000000000:0000000000000000:0000000000000000:1111111111111111:1111111111111111</td></tr>
+		<tr><td>ffff:ffff:ffff:ffff::</td><td>340282366920938463444927863358058659840</td><td>ffff:ffff:ffff:ffff:0000:0000:0000:0000</td><td>1111111111111111:1111111111111111:1111111111111111:1111111111111111:0000000000000000:0000000000000000:0000000000000000:0000000000000000</td></tr>
+		<tr><td>ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff</td><td>340282366920938463463374607431768211455</td><td>ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff</td><td>1111111111111111:1111111111111111:1111111111111111:1111111111111111:1111111111111111:1111111111111111:1111111111111111:1111111111111111</td></tr>
+	</table>
+</body>
+<script>
+	// https://github.com/whitequark/ipaddr.js
+	input = document.getElementById("input");
+	output = document.getElementById("output");
+	function convert() {
+		trimed = input.value.trim()
+
+		if (ipaddr.isValid(trimed)) {
+			byteArray = ipaddr.parse(trimed).toByteArray()
+		} else {
+			if (BigInt(trimed) > 340282366920938463463374607431768211455n) {
+				output.value = 'Overflow\n'
+				return
+			} else {
+				byteArray = []
+				BigInt(trimed).toString(2).padStart(128,'0').match(/.{1,8}/g).forEach(e=>{byteArray.push(parseInt(e, 2))})
+			}
+		}
+		input.value = ''
+		Octets = byteArray.map(e=>e.toString(2).padStart(8,'0'))
+
+		output.value += 'BigInteger  ' + BigInt('0b' + Octets.join('')) +
+		'\nHexadecimal ' + byteArray.map(e=>e.toString(16).padStart(2,'0')).join('').match(/.{1,4}/g).join(':') +
+		'\n\nNumeral Systems' +
+		'\n* Binary        ' + Octets.join('') +
+		'\n* Quaternary    ' + Octets.join('').match(/.{1,2}/g).map(e=>{return parseInt(e, 2).toString().padStart(2,' ')}).join('') +
+		'\n* Octal         ' + Octets.join('').match(/.{1,3}(?=(.{3})*$)/g).map(e=>{return parseInt(e, 2).toString(8).padStart(3,' ')}).join('').slice(byteArray.length * -8) +
+		'\n* Hexadecimal   ' + Octets.join('').match(/.{1,4}/g).map(e=>{return parseInt(e, 2).toString(16).padStart(4,' ')}).join('') +
+		'\n* Duotrigesimal ' + Octets.join('').match(/.{1,5}(?=(.{5})*$)/g).map(e=>{return parseInt(e, 2).toString(32).padStart(5,' ')}).join('').slice(byteArray.length * -8) +
+		'\n\nByte Arrays' +
+		'\n* Binary        ' + Octets +
+		'\n* Quaternary    ' + byteArray.map(e=>e.toString(4).padStart(8,' ')) +
+		'\n* Octal         ' + byteArray.map(e=>e.toString(8).padStart(8,' ')) +
+		'\n* Decimal       ' + byteArray.map(e=>e.toString(10).padStart(8,' ')) +
+		'\n* Hexadecimal   ' + byteArray.map(e=>e.toString(16).padStart(8,' ')) +
+		'\n* Duotrigesimal ' + byteArray.map(e=>e.toString(32).padStart(8,' ')) + '\n\n'
+
+		output.scrollTop = output.scrollHeight
+	}
+	function clrOutput() {
+		output.value = ''
+	}
+</script>
+</html>
